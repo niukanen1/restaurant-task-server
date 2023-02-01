@@ -46,6 +46,7 @@ app.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     // try to find user in db; 
     try {
         const user = yield databaseConnector_1.userCollection.findOne({ email: email });
+        console.log(user);
         if (!user) {
             return res.status(403).json(new responseModel_1.ResponseObject(false, "User doesn't exists", null));
         }
