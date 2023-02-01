@@ -46,6 +46,9 @@ app.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     // try to find user in db; 
     try {
         const user = yield databaseConnector_1.userCollection.findOne({ email: email });
+        if (!user) {
+            return res.status(403).json(new responseModel_1.ResponseObject(false, "User doesn't exists", null));
+        }
         if (!(yield (0, userRouter_1.ComparePassword)(password, user.password))) {
             return res.status(403).json(new responseModel_1.ResponseObject(false, "Wrong password", null));
         }
