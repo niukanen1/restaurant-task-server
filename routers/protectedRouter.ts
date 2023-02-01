@@ -1,6 +1,8 @@
 import { Router } from "express";
+import { dishRouter } from "./dishRouter";
 import { userRouter } from "./userRouter";
 
-const protectedRouter = Router(); 
+export const protectedRouter = Router(); 
 
 protectedRouter.use("/user", userRouter); 
+protectedRouter.use("/dishes", dishRouter); 

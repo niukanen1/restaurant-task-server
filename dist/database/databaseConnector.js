@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.otherCollection = exports.drinksCollection = exports.lunchCollection = exports.breakfastCollection = exports.userCollection = void 0;
+exports.dishCollection = exports.userCollection = void 0;
 const mongodb_1 = require("mongodb");
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
@@ -13,10 +13,7 @@ console.log(URI);
 const client = new mongodb_1.MongoClient(URI);
 const database = client.db("restaurant-task");
 exports.userCollection = database.collection("users");
-exports.breakfastCollection = database.collection("breakfast");
-exports.lunchCollection = database.collection("lunch");
-exports.drinksCollection = database.collection("drinks");
-exports.otherCollection = database.collection("other");
+exports.dishCollection = database.collection("dishes");
 client.connect().then(() => {
     console.log("Database is OK");
 }).catch(err => {

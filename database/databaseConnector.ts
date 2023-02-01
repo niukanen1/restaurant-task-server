@@ -10,11 +10,7 @@ const client = new MongoClient(URI);
 const database = client.db("restaurant-task")
 
 export const userCollection = database.collection("users");
-export const breakfastCollection = database.collection("breakfast");
-export const lunchCollection = database.collection("lunch");
-export const drinksCollection = database.collection("drinks");
-export const otherCollection = database.collection("other");
-
+export const dishCollection = database.collection("dishes"); 
 
 client.connect().then(() => { 
     console.log("Database is OK");

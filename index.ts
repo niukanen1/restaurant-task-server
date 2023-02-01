@@ -6,8 +6,9 @@ import { Authenticate, GenerateToken, SerializeToken } from "./TokenService";
 import { ResponseObject } from "./Models/responseModel";
 import { AddUserToDb } from "./UserService";
 import { User } from "./Models/userModel";
-import { userCollection } from "./database/databaseConnector";
+import { dishCollection, userCollection } from "./database/databaseConnector";
 import { ComparePassword } from "./routers/userRouter";
+import { protectedRouter } from "./routers/protectedRouter";
 
 dotenv.config();
 
@@ -29,6 +30,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(cors(corsOptions));
 app.use(Authenticate);
+app.use("/protected", protectedRouter);
 
 app.use(function (req, res, next) {
 	res.header("Access-Control-Allow-Origin", req.headers.origin);
@@ -78,6 +80,14 @@ app.post("/register", async (req, res) => {
 	res.setHeader("Set-Cookie", SerializeToken(token));
 	return res.status(200).json(new ResponseObject(true, "Successfully registered", null));
 });
+app.get("/getDishes",async (req, res) => { 
+    try { 
+        const dishes = await dishCollection.find({}).toArray()
+        return res.status(200).json(new ResponseObject(true, "Successfully fetched all dishes", dishes));
+    } catch (err) { 
+        return res.status(403).json(new ResponseObject(false, (err as Error).message, null))
+    }
+})
 
 app.listen(PORT, () => {
 	console.log("Started server");

@@ -21,6 +21,7 @@ const responseModel_1 = require("./Models/responseModel");
 const UserService_1 = require("./UserService");
 const databaseConnector_1 = require("./database/databaseConnector");
 const userRouter_1 = require("./routers/userRouter");
+const protectedRouter_1 = require("./routers/protectedRouter");
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 4000;
@@ -33,6 +34,7 @@ app.use(express_1.default.urlencoded({ extended: true }));
 app.use((0, cookie_parser_1.default)());
 app.use((0, cors_1.default)(corsOptions));
 app.use(TokenService_1.Authenticate);
+app.use("/protected", protectedRouter_1.protectedRouter);
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", req.headers.origin);
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -47,7 +49,6 @@ app.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     try {
         console.log(email);
         const user = yield databaseConnector_1.userCollection.findOne({ email: email });
-        console.log(user);
         if (!user) {
             return res.status(403).json(new responseModel_1.ResponseObject(false, "User doesn't exists", null));
         }
@@ -73,6 +74,15 @@ app.post("/register", (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
     res.setHeader("Set-Cookie", (0, TokenService_1.SerializeToken)(token));
     return res.status(200).json(new responseModel_1.ResponseObject(true, "Successfully registered", null));
+}));
+app.get("/getDishes", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const dishes = yield databaseConnector_1.dishCollection.find({}).toArray();
+        return res.status(200).json(new responseModel_1.ResponseObject(true, "Successfully fetched all dishes", dishes));
+    }
+    catch (err) {
+        return res.status(403).json(new responseModel_1.ResponseObject(false, err.message, null));
+    }
 }));
 app.listen(PORT, () => {
     console.log("Started server");
