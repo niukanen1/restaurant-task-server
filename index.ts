@@ -46,9 +46,13 @@ app.post("/login", async (req, res) => {
     // try to find user in db; 
     try { 
         const user: User = await userCollection.findOne({email: email}) as User; 
+        if (!user) { 
+            return res.status(403).json(new ResponseObject(false, "User doesn't exists", null)); 
+        }
         if (!(await ComparePassword(password, user.password))) { 
             return res.status(403).json(new ResponseObject(false, "Wrong password", null)); 
         }
+        
     } catch (err) { 
         console.log("ERROR: " + err);
     }
