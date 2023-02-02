@@ -39,6 +39,7 @@ function Authenticate(req, res, next) {
         if (!req.path.includes("/protected"))
             return next();
         const { accessToken: token } = req.cookies;
+        console.log(token);
         if (!token) {
             return res.status(403).json(new responseModel_1.ResponseObject(false, "Token should be provided!", null));
         }

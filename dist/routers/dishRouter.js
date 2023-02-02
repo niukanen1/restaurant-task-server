@@ -19,7 +19,6 @@ exports.dishRouter = (0, express_1.Router)();
 exports.dishRouter.post("/createDish", (0, express_validator_1.body)("newDish.type").isIn(["drink", "dish"]).withMessage(new responseModel_1.ResponseObject(false, "Incorrect type of dish", null)), (0, express_validator_1.body)("newDish.mealTimeType")
     .isIn(["breakfast", "lunch", "dinner", "other", "drinks"]), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { newDish } = req.body;
-    console.log(newDish);
     const errors = (0, express_validator_1.validationResult)(req);
     if (!errors.isEmpty()) {
         return res.status(400).json(new responseModel_1.ResponseObject(false, "New dish data validation failed", null));
@@ -29,12 +28,15 @@ exports.dishRouter.post("/createDish", (0, express_validator_1.body)("newDish.ty
             throw new Error("Provide proper dish object");
         }
         // if dish exists try to add it to databse;
-        yield databaseConnector_1.dishCollection.insertOne(newDish);
+        const insertinoResponse = yield databaseConnector_1.dishCollection.insertOne(newDish);
+        // console.log('inserted Dish')  
+        const insertedDish = yield databaseConnector_1.dishCollection.findOne({ _id: insertinoResponse.insertedId });
+        // console.log(insertedDish);
+        return res.status(200).json(new responseModel_1.ResponseObject(true, "Successfully created dish", insertedDish));
     }
     catch (err) {
         return res.status(403).json(new responseModel_1.ResponseObject(false, err.message, null));
     }
-    return res.status(200).json(new responseModel_1.ResponseObject(true, "Successfully created dish", null));
 }));
 exports.dishRouter.post("/updateDish", (0, express_validator_1.body)("updatedDish.type").isIn(["drink", "dish"]), (0, express_validator_1.body)("updatedDish.mealTimeType")
     .isIn(["breakfast", "lunch", "dinner", "other", "drinks"]), (req, res) => __awaiter(void 0, void 0, void 0, function* () {

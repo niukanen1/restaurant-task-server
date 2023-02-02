@@ -26,6 +26,7 @@ export async function Authenticate(req: Request, res: Response, next: NextFuncti
 	if (!req.path.includes("/protected")) return next();
 
 	const { accessToken: token } = req.cookies;
+    console.log(token);
 
 	if (!token) {
 		return res.status(403).json(new ResponseObject(false, "Token should be provided!", null));

@@ -15,7 +15,6 @@ dishRouter.post(
 		.isIn(["breakfast", "lunch", "dinner", "other", "drinks"]),
 	async (req: TypedRequest<{newDish: DishInput}>, res) => {
 		const {newDish} = req.body;
-        console.log(newDish)
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
           return res.status(400).json(new ResponseObject(false, "New dish data validation failed", null));
@@ -25,11 +24,15 @@ dishRouter.post(
 				throw new Error("Provide proper dish object");
 			}
 			// if dish exists try to add it to databse;
-			await dishCollection.insertOne(newDish);
+			const insertinoResponse = await dishCollection.insertOne(newDish);
+            // console.log('inserted Dish')  
+            const insertedDish = await dishCollection.findOne({_id: insertinoResponse.insertedId});
+            // console.log(insertedDish);
+            return res.status(200).json(new ResponseObject(true, "Successfully created dish", insertedDish));
 		} catch (err) {
 			return res.status(403).json(new ResponseObject(false, (err as Error).message, null));
 		}
-		return res.status(200).json(new ResponseObject(true, "Successfully created dish", null));
+		
 	}
 );
 

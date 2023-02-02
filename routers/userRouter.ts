@@ -8,9 +8,6 @@ import { GenerateToken, SerializeToken } from "../TokenService";
 export const userRouter = Router(); 
 
 
-
-
-
 const SALT_ROUNDS = 10; 
 
 export async function ComparePassword(password: string, hashedPassword: string): Promise<boolean> { 
